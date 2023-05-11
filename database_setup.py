@@ -3,7 +3,7 @@ from psycopg2 import sql
 
 conn = psycopg2.connect(
     dbname="your_database",
-    user="your_username",
+    user="postgres",
     password="your_password",
     host="localhost"
 )

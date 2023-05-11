@@ -3,8 +3,8 @@ import psycopg2
 
 app = Flask(__name__)
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
+@app.route('/', methods=['GET', 'POST'])
+def home():
     if request.method == 'POST':
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
@@ -14,7 +14,7 @@ def register():
 
         conn = psycopg2.connect(
             dbname="your_database",
-            user="your_username",
+            user="postgres",
             password="your_password",
             host="localhost"
         )
@@ -30,4 +30,5 @@ def register():
     return render_template('register.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
+
