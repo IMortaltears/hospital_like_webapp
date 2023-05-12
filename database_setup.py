@@ -4,7 +4,7 @@ from psycopg2 import sql
 conn = psycopg2.connect(
     dbname="your_database",
     user="postgres",
-    password="your_password",
+    password="postgres",
     host="localhost"
 )
 
