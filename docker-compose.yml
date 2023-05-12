@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  db:
+    build: ./db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/your_database
+
+volumes:
+  db_data:
