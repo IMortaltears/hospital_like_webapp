@@ -6,6 +6,7 @@ project
  - Dockerfile
  - app.py
  - requirements.txt
+
    db
    - Dockerfile 
    - database_setup.py

@@ -1,82 +1,41 @@
 from flask import Flask, request, render_template
-import psycopg2
-from psycopg2 import sql
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
 app = Flask(__name__)
 
 # Database setup
-def create_database():
-    conn = psycopg2.connect(
-        dbname="postgres",
-        user="postgres",
-        password="postgres",
-        host="db"
-    )
-    conn.set_isolation_level(0)
-    cur = conn.cursor()
-    cur.execute("CREATE DATABASE your_database")
-    conn.close()
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@db/your_database'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-def create_table():
-    conn = psycopg2.connect(
-        dbname="your_database",
-        user="postgres",
-        password="postgres",
-        host="db"
-    )
-    cur = conn.cursor()
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS patients (
-        id UUID PRIMARY KEY,
-        first_name TEXT,
-        last_name TEXT,
-        email TEXT,
-        date_of_birth DATE,
-        gender CHAR(1)
-    )
-    """)
-    conn.commit()
-    conn.close()
+db = SQLAlchemy(app)
 
-try:
-    conn = psycopg2.connect(
-        dbname="your_database",
-        user="postgres",
-        password="postgres",
-        host="db"
-    )
-    create_database()
-    create_table()
-    conn.close()
-except:
-    print("error")
+class Patient(db.Model):
+    __tablename__ = 'patients'
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    first_name = db.Column(db.String(50))
+    last_name = db.Column(db.String(50))
+    email = db.Column(db.String(50))
+    date_of_birth = db.Column(db.Date)
+    gender = db.Column(db.String(10))
+
+db.create_all()
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        patient_id = uuid.uuid4()
-        first_name = request.form.get('first_name')
-        last_name = request.form.get('last_name')
-        email = request.form.get('email')
-        dob = request.form.get('dob')
-        gender = request.form.get('gender')
-
-        conn = psycopg2.connect(
-            dbname="your_database",
-            user="postgres",
-            password="postgres",
-            host="db"
+        new_patient = Patient(
+            first_name=request.form.get('first_name'),
+            last_name=request.form.get('last_name'),
+            email=request.form.get('email'),
+            date_of_birth=request.form.get('dob'),
+            gender=request.form.get('gender')
         )
 
-        cur = conn.cursor()
-
-        insert_query = sql.SQL("INSERT INTO patients (id, first_name, last_name, email, date_of_birth, gender) VALUES (%s, %s, %s, %s, %s, %s)")
-        data = (str(patient_id), first_name, last_name, email, dob, gender)
-
-        cur.execute(insert_query, data)
-        conn.commit()
-        conn.close()
+        db.session.add(new_patient)
+        db.session.commit()
 
         return 'Registration Successful'
     return render_template('register.html')
