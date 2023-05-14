@@ -11,7 +11,7 @@ def create_database():
         dbname="postgres",
         user="postgres",
         password="postgres",
-        host="localhost"
+        host="db"
     )
     conn.set_isolation_level(0)
     cur = conn.cursor()
@@ -23,7 +23,7 @@ def create_table():
         dbname="your_database",
         user="postgres",
         password="postgres",
-        host="localhost"
+        host="db"
     )
     cur = conn.cursor()
     cur.execute("""
@@ -44,12 +44,13 @@ try:
         dbname="your_database",
         user="postgres",
         password="postgres",
-        host="localhost"
+        host="db"
     )
-    conn.close()
-except:
     create_database()
     create_table()
+    conn.close()
+except:
+    print("error")
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -65,7 +66,7 @@ def register():
             dbname="your_database",
             user="postgres",
             password="postgres",
-            host="localhost"
+            host="db"
         )
 
         cur = conn.cursor()
