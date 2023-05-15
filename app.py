@@ -1,44 +1,44 @@
 from flask import Flask, request, render_template
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import UUID
-import uuid
+from sqlalchemy.orm import scoped_session
+from sqlalchemy import create_engine
+from database import SessionLocal, Base
+from models import Patient
 
 app = Flask(__name__)
 
-# Database setup
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@db/your_database'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Set up database
+engine = create_engine("postgresql://postgres:postgres@db/your_database")
+db_session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 
-db = SQLAlchemy(app)
-
-class Patient(db.Model):
-    __tablename__ = 'patients'
-
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    first_name = db.Column(db.String(50))
-    last_name = db.Column(db.String(50))
-    email = db.Column(db.String(50))
-    date_of_birth = db.Column(db.Date)
-    gender = db.Column(db.String(10))
-
-db.create_all()
+@app.teardown_appcontext
+def cleanup(resp_or_exc):
+    db_session.remove()
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
+        patient_id = uuid.uuid4()
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        email = request.form.get('email')
+        dob = request.form.get('dob')
+        gender = request.form.get('gender')
+
         new_patient = Patient(
-            first_name=request.form.get('first_name'),
-            last_name=request.form.get('last_name'),
-            email=request.form.get('email'),
-            date_of_birth=request.form.get('dob'),
-            gender=request.form.get('gender')
+            id=str(patient_id),
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            date_of_birth=dob,
+            gender=gender
         )
 
-        db.session.add(new_patient)
-        db.session.commit()
+        db_session.add(new_patient)
+        db_session.commit()
 
         return 'Registration Successful'
     return render_template('register.html')
 
 if __name__ == '__main__':
+    Base.metadata.create_all(bind=engine)
     app.run(debug=True, host='0.0.0.0')
