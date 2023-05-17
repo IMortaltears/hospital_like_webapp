@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
+from markupsafe import escape
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
