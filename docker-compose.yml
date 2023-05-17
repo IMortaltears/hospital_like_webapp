@@ -1,19 +1,22 @@
-version: '3.8'
-
+version: '3'
 services:
-  web:
+  app:
     build: .
     ports:
-     - "5000:5000"
-    volumes:
-     - .:/app
+      - '5000:5000'
     environment:
-     - FLASK_ENV=development
-     - APP_FILE=app.py
-     - FLASK_RUN_HOST=0.0.0.0
+      - DB_URL=postgresql://postgres:postgres@db/your_database
+    depends_on:
+      - db
   db:
-    image: postgres:13
+    image: postgres
+    restart: always
     environment:
-      POSTGRES_DB: your_database
-      POSTGRES_USER: postgres
-     
+      - POSTGRES_DB=your_database
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
