@@ -13,7 +13,7 @@ cur = conn.cursor()
 table_create_query = sql.SQL(
     """
     CREATE TABLE IF NOT EXISTS patients (
-        id SERIAL PRIMARY KEY,
+        id UUID PRIMARY KEY,
         first_name VARCHAR(50),
         last_name VARCHAR(50),
         email VARCHAR(50),

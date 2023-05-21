@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
+import uuid
+from datetime import datetime
 from markupsafe import escape
 
 app = Flask(__name__)
@@ -32,7 +34,7 @@ def register_patient():
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
         email = request.form.get('email')
-        dob = request.form.get('dob')
+        dob = datetime.strptime(request.form.get('dob'), "%Y-%m-%d").date()
         gender = request.form.get('gender')
 
         new_patient = Patient(
