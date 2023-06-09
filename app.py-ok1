@@ -65,8 +65,8 @@ def register_patient():
 def get_patients():
     try:
         patients = Patient.query.all()
-        return render_template('patients.html', patients=patients)
-        #return render_template('patients.html')
+        #return render_template('patients.html', patients=patients)
+        return render_template('patients.html')
     except Exception as e:
         return f'Error getting patients: {str(e)}'
 

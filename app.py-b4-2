@@ -2,7 +2,6 @@ from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
 from markupsafe import escape
-import datetime
 import uuid
 
 app = Flask(__name__)
@@ -33,14 +32,10 @@ def register_form():
 def register_patient():
     try:
         patient_id = str(uuid.uuid4())
-        #patient_id = "11"
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
-        #email = request.form.get('email')
-        email = str(uuid.uuid4())
-        new = request.form.get('new')
-        dob1 = request.form.get('dob')
-        dob = datetime.datetime.strptime(dob1, '%Y-%m-%d')
+        email = request.form.get('email')
+        dob = request.form.get('dob')
         gender = request.form.get('gender')
 
         new_patient = Patient(
@@ -48,7 +43,6 @@ def register_patient():
             first_name=first_name,
             last_name=last_name,
             email=email,
-            new=new,
             date_of_birth=dob,
             gender=gender
         )
@@ -66,7 +60,6 @@ def get_patients():
     try:
         patients = Patient.query.all()
         return render_template('patients.html', patients=patients)
-        #return render_template('patients.html')
     except Exception as e:
         return f'Error getting patients: {str(e)}'
 

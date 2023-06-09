@@ -13,11 +13,11 @@
     
     
     <!-- Styles -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    <link href="https://www.labonlinebooking.ca/css/app.css" rel="stylesheet">
     <!-- Jquery UI Base Theme -->
     <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
     <!-- custom styling -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://www.labonlinebooking.ca/css/styles.css" rel="stylesheet">
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     
@@ -103,7 +103,7 @@
                 <div class="panel-header bg-primary">Register</div>
 
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="/register">
+                    <form class="form-horizontal" method="POST" action="https://www.labonlinebooking.ca/register">
                         <input type="hidden" name="_token" value="3RyJvatPssOv2AjOoi2ESuLyHVoGq4gp44ZReYV6">
 
                         <div class="form-group">

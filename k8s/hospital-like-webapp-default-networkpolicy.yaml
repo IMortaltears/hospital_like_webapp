@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  creationTimestamp: null
+  name: hospital-like-webapp-default
+spec:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              io.kompose.network/hospital-like-webapp-default: "true"
+  podSelector:
+    matchLabels:
+      io.kompose.network/hospital-like-webapp-default: "true"
